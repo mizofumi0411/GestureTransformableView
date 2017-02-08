@@ -6,9 +6,12 @@ import jp.ogwork.gesturetransformableview.gesture.PinchGestureDetector;
 import jp.ogwork.gesturetransformableview.gesture.PinchGestureDetector.PinchGestureListener;
 import jp.ogwork.gesturetransformableview.gesture.RotateGestureDetector;
 import jp.ogwork.gesturetransformableview.gesture.RotateGestureDetector.RotateGestureListener;
+import jp.ogwork.gesturetransformableview.gesture.SwipeGestureListener;
+
 import android.content.Context;
 import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -39,6 +42,20 @@ public class GestureTransformableImageView extends ImageView implements OnTouchL
     private DragGestureDetector dragGestureDetector;
 
     private PinchGestureDetector pinchGestureDetector;
+
+    private GestureDetector swipeGestureDetector;
+
+    private OnTouchListener tapListener;
+
+    public void setSwipeListener(SwipeGestureListener.SwipeListener swipeListener){
+        SwipeGestureListener listener = new SwipeGestureListener();
+        listener.setSwipeListener(swipeListener);
+        this.swipeGestureDetector = new GestureDetector(getContext(),listener);
+    }
+
+    public void setTapListener(OnTouchListener tapListener) {
+        this.tapListener = tapListener;
+    }
 
     private float angle;
 
@@ -84,6 +101,15 @@ public class GestureTransformableImageView extends ImageView implements OnTouchL
         if (pinchGestureDetector != null) {
             pinchGestureDetector.onTouchEvent(event);
         }
+
+        if (swipeGestureDetector != null){
+            swipeGestureDetector.onTouchEvent(event);
+        }
+
+        if (tapListener != null){
+            tapListener.onTouch(v,event);
+        }
+
 
         return true;
     }
